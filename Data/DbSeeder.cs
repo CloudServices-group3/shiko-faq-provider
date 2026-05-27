@@ -16,7 +16,7 @@ public static class DbSeeder
             new()
             {
                 Id = Guid.NewGuid(),
-                CourseId = "course-1",
+                CourseId = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
                 Question = "What is included in this course?",
                 Answer = "This course includes video lessons, assignments, quizzes and downloadable resources.",
                 SortOrder = 1,
@@ -25,7 +25,7 @@ public static class DbSeeder
             new()
             {
                 Id = Guid.NewGuid(),
-                CourseId = "course-1",
+                CourseId = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
                 Question = "Do I get lifetime access?",
                 Answer = "Yes, once you enroll you can access the course material at any time.",
                 SortOrder = 2,
@@ -34,7 +34,7 @@ public static class DbSeeder
             new()
             {
                 Id = Guid.NewGuid(),
-                CourseId = "course-1",
+                CourseId = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
                 Question = "Is there a certificate after completion?",
                 Answer = "Yes, you will receive a certificate when you complete all required course sections.",
                 SortOrder = 3,
