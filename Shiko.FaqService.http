@@ -1,0 +1,6 @@
+@Shiko.FaqService_HostAddress = http://localhost:5242
+
+GET {{Shiko.FaqService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
