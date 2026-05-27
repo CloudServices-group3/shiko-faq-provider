@@ -1,12 +1,13 @@
+using Shiko.FaqService.Data;
+using Shiko.FaqService.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -14,28 +15,66 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
+app.MapGet("/api/faqs/course/{courseId}", (string courseId) =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    var faqs = FakeFaqData.Faqs
+        .Where(faq => faq.CourseId == courseId)
+        .OrderBy(faq => faq.SortOrder)
+        .ToList();
 
-app.MapGet("/weatherforecast", () =>
+    return Results.Ok(faqs);
+});
+
+app.MapGet("/api/faqs/{id:guid}", (Guid id) =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    var faq = FakeFaqData.Faqs.FirstOrDefault(faq => faq.Id == id);
+
+    return faq is null
+        ? Results.NotFound()
+        : Results.Ok(faq);
+});
+
+app.MapPost("/api/faqs", (FaqItem faq) =>
+{
+    faq.Id = Guid.NewGuid();
+    faq.CreatedAt = DateTime.UtcNow;
+
+    FakeFaqData.Faqs.Add(faq);
+
+    return Results.Created($"/api/faqs/{faq.Id}", faq);
+});
+
+app.MapPut("/api/faqs/{id:guid}", (Guid id, FaqItem updatedFaq) =>
+{
+    var faq = FakeFaqData.Faqs.FirstOrDefault(faq => faq.Id == id);
+
+    if (faq is null)
+    {
+        return Results.NotFound();
+    }
+
+    faq.CourseId = updatedFaq.CourseId;
+    faq.Question = updatedFaq.Question;
+    faq.Answer = updatedFaq.Answer;
+    faq.SortOrder = updatedFaq.SortOrder;
+    faq.UpdatedAt = DateTime.UtcNow;
+
+    return Results.Ok(faq);
+});
+
+app.MapDelete("/api/faqs/{id:guid}", (Guid id) =>
+{
+    var faq = FakeFaqData.Faqs.FirstOrDefault(faq => faq.Id == id);
+
+    if (faq is null)
+    {
+        return Results.NotFound();
+    }
+
+    FakeFaqData.Faqs.Remove(faq);
+
+    return Results.NoContent();
+});
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
