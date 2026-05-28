@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Shiko.FaqService.Data;
 using Shiko.FaqService.Endpoints;
-using Shiko.FaqService.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,8 +35,8 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseHttpsRedirection();
-app.MapFaqEndpoints();
 app.UseCors("AllowFrontend");
+app.MapFaqEndpoints();
 
 app.Run();
 
